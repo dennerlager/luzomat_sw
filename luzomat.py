@@ -1,9 +1,12 @@
 import abc
 import time
+from boiler import Boiler
 
 class Luzomat:
     def __init__(self):
         self.currentState = IdleState()
+        self.boiler = Boiler()
+        self.boiler.setTemperatureC(95)
 
     def coffeeButton(self):
         self.currentState.coffeeButton(self)
@@ -19,6 +22,9 @@ class Luzomat:
 
     def changeState(self, newState):
         self.currentState = newState
+
+    def shutdown(self):
+        self.boiler.shutdown()
 
 class State(abc.ABC):
     @abc.abstractmethod

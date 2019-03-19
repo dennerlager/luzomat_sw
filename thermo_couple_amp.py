@@ -1,6 +1,6 @@
+import spi
 import bitstruct
 import unittest
-import spi
 import thermo_couple_amp_memory
 
 class TCAmp:
