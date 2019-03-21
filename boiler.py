@@ -47,14 +47,26 @@ class BoilerWorker(multiprocessing.Process):
             self.shutdownHeater()
 
     def controlHeater(self):
-        pass
+        temperature1 = self.tempSensor1.getTemperatureC()
+        temperature2 = self.tempSensor2.getTemperatureC()
+        maxDelta = 2
+        if abs(temperature1 - temperature2) > maxDelta:
+            raise RuntimeError(f'temperatures differ more than {maxDelta}\n' +
+                               f'temp1: {temperature1}, temp2: {temperature2}')
+        temperature = (temperature1 + temperature2) / 2
+        if ((not self.heater.isOn()) and
+            (temperature < self.setPointC - self.hysteresis)):
+            self.heater.turnOn()
+        if ((self.heater.isOn()) and
+            (temperature > self.setPointC + self.hysteresis)):
+            self.heater.turnOff()
+        self.heater.resetWatchdog()
 
     def shutdownHeater(self):
-        pass
+        self.heater.turnOff()
 
     def setTemperatureC(self, temperatureC):
         self.setPointC = temperatureC
-        print(f'worker sets temp to {temperatureC}C')
 
 if __name__ == '__main__':
     boiler = Boiler()

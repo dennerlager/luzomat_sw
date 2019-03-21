@@ -1,16 +1,24 @@
+from gpio import Output
+
 class Heater:
     def __init__(self):
-        self.coil = Gpio(1)
-        self.watchdog = Gpio(2)
+        self.asyncResetActiveLow = Output(12)
+        self.watchdog = Output(11)
+        self.on = False
 
     def turnOn(self):
-        pass
+        self.asyncResetActiveLow.set()
+        self.watchdog.set()
+        self.on = True
 
     def turnOff(self):
-        pass
+        self.asyncResetActiveLow.clear()
+        self.watchdog.clear()
+        self.on = False
 
-    def isTurnedOn(self):
-        pass
+    def isOn(self):
+        return self.on
 
     def resetWatchdog(self):
-        pass
+        self.watchdog.clear()
+        self.watchdog.set()
