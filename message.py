@@ -4,8 +4,8 @@ class Message:
         self.data = data
 
     def __repr__(self):
-        return (f'command: {self.command}\n' +
-                f'data: {self.data}')
+        return ('command: {}\n'.format(self.command) +
+                'data: {}'.format(self.data))
 
 if __name__ == '__main__':
     print(Message('test', [1, 2, 3]))

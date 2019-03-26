@@ -9,10 +9,6 @@ class Spi:
         self.spi = spidev.SpiDev()
         self.spi.open(bus, device)
         self.spi.max_speed_hz = 5000000
-        print(self.spi.cshigh)
-        print(self.spi.bits_per_word)
-        print(self.spi.lsbfirst)
-        print(self.spi.mode)
         self.spi.mode = 1
 
     def __del__(self):

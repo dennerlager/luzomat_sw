@@ -6,6 +6,7 @@ except ImportError:
 
 class Gpio(abc.ABC):
     def __init__(self, channel):
+        gpio.setmode(gpio.BOARD)
         self.channel = channel
         self.setup()
 

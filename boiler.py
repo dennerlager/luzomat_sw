@@ -51,8 +51,11 @@ class BoilerWorker(multiprocessing.Process):
         temperature2 = self.tempSensor2.getTemperatureC()
         maxDelta = 2
         if abs(temperature1 - temperature2) > maxDelta:
-            raise RuntimeError(f'temperatures differ more than {maxDelta}\n' +
-                               f'temp1: {temperature1}, temp2: {temperature2}')
+            raise RuntimeError(
+                'temperatures differ more than {}\n'.format(maxDelta) +
+                               'temp1: {}, temp2: {}'.format(
+                                   temperature1,
+                                   temperature2))
         temperature = (temperature1 + temperature2) / 2
         if ((not self.heater.isOn()) and
             (temperature < self.setPointC - self.hysteresis)):
