@@ -87,7 +87,11 @@ class TCAmpTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-    t = TCAmp(0)
-    for registername in t.memory.registermap.keys():
-        print('{}: 0x{:02x}'.format(registername,
-                                    t.readRegister(registername)))
+    t0 = TCAmp(0)
+    t1 = TCAmp(1)
+    try:
+        while True:
+            print('\rsensor 1: {: 3.1f}°C, sensor 2: {: 3.1f}°C'.format(
+                t0.getTemperatureC(), t1.getTemperatureC()), end='')
+    except KeyboardInterrupt:
+        print()

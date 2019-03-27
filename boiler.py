@@ -12,6 +12,8 @@ class Boiler:
         self.worker.start()
 
     def setTemperatureC(self, temperatureC):
+        if temperatureC > 99:
+            raise ValueError('temperature {}°C exeeds limit'.format(temperatureC))
         self.qToWorker.put(Message('setTemperatureC', temperatureC))
 
     def shutdown(self):
@@ -25,8 +27,8 @@ class BoilerWorker(multiprocessing.Process):
         self.qFromWorker = qFromWorker
         self.setPointC = 0
         self.hysteresis = 2
-        self.tempSensor1 = TCAmp(1)
-        self.tempSensor2 = TCAmp(2)
+        self.tempSensor1 = TCAmp(0)
+        self.tempSensor2 = TCAmp(1)
         self.heater = Heater()
 
     def run(self):
@@ -73,5 +75,6 @@ class BoilerWorker(multiprocessing.Process):
 
 if __name__ == '__main__':
     boiler = Boiler()
-    boiler.setTemperatureC(20)
+    boiler.setTemperatureC(50)
+    input('shutdown? ')
     boiler.shutdown()

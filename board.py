@@ -1,3 +1,4 @@
+import time
 from gpio import Input, Output
 
 class Board:
@@ -6,12 +7,15 @@ class Board:
         self.teaButton = Input(8)
         self.coinSlotRx = Input(13)
         self.coinSlotTx = Output(15)
+        self.coinMotor = Output(40)
         self.led1 = Output(22)
         self.led2 = Output(18)
         self.schnapsTop = Output(36)
         self.schnapsBottom = Output(35)
         self.water = Output(38)
         self.air = Output(37)
+        self.teaButtonLastState = self.isTeaButtonPressed()
+        self.coinLastState = self.isCoinPresent()
 
     def openAirValve(self):
         self.air.set()
@@ -55,17 +59,41 @@ class Board:
     def isTeaButtonPressed(self):
         return self.teaButton.read()
 
+    def wasTeaButtonPressed(self):
+        if ((not self.teaButtonLastState) and
+            self.isTeaButtonPressed()):
+            self.teaButtonLastState = True
+            return True
+
+    def wasTeaButtonReleased(self):
+        if (self.teaButtonLastState and
+            (not self.isTeaButtonPressed())):
+            self.teaButtonLastState = False
+            return True
+
+    def isPaid(self):
+        if ((not self.coinLastState) and
+            self.isCoinPresent()):
+            self.coinLastState = True
+            return True
+
+    def isCoinPresent(self):
+        self.turnCoinSlotTxOn()
+        isCoinPresent = self.coinSlotRx.read()
+        self.turnCoinSlotTxOff()
+        return isCoinPresent
+
     def turnCoinSlotTxOn(self):
         self.coinSlotTx.set()
 
     def turnCoinSlotTxOff(self):
         self.coinSlotTx.clear()
 
-    def isPaid(self):
-        self.turnCoinSlotTxOn()
-        isPaid = self.coinSlotRx.read()
-        self.turnCoinSlotTxOff()
-        return isPaid
+    def dropCoin(self):
+        self.coinMotor.set()
+        time.sleep(1)
+        self.coinMotor.clear()
+        self.coinLastState = False
 
 if __name__ == '__main__':
     board = Board()
@@ -115,7 +143,7 @@ if __name__ == '__main__':
     input('pressed? ')
     print(board.isTeaButtonPressed())
 
-    print('is paid')
-    print(board.isPaid())
-    input('paid')
-    print(board.isPaid())
+    print('is coin present')
+    print(board.isCoinPresent())
+    input('present')
+    print(board.isCoinPresent())

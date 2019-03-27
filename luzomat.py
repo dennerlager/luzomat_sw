@@ -1,5 +1,6 @@
 import abc
 import time
+from board import Board
 from boiler import Boiler
 
 class Luzomat:
@@ -7,12 +8,13 @@ class Luzomat:
         self.currentState = IdleState()
         self.boiler = Boiler()
         self.boiler.setTemperatureC(95)
+        self.board = Board()
 
     def coffeeButton(self):
         self.currentState.coffeeButton(self)
 
-    def teaButtonPushed(self):
-        self.currentState.teaButtonPushed(self)
+    def teaButtonPressed(self):
+        self.currentState.teaButtonPressed(self)
 
     def teaButtonReleased(self):
         self.currentState.teaButtonReleased(self)
@@ -26,13 +28,27 @@ class Luzomat:
     def shutdown(self):
         self.boiler.shutdown()
 
+    def mainloop(self):
+        try:
+            while True:
+                if self.board.isCoffeeButtonPressed():
+                    self.coffeeButton()
+                if self.board.wasTeaButtonPressed():
+                    self.teaButtonPressed()
+                if self.board.wasTeaButtonReleased():
+                    self.teaButtonReleased()
+                if self.board.isPaid():
+                    self.coin()
+        finally:
+            self.shutdown()
+
 class State(abc.ABC):
     @abc.abstractmethod
     def coffeeButton(self, luzomat):
         pass
 
     @abc.abstractmethod
-    def teaButtonPushed(self, luzomat):
+    def teaButtonPressed(self, luzomat):
         pass
 
     @abc.abstractmethod
@@ -50,36 +66,41 @@ class IdleState(State):
     def coffeeButton(self, luzomat):
         pass
 
-    def teaButtonPushed(self, luzomat):
-        luzomat.openAirValve()
-        luzomat.openWaterValve()
+    def teaButtonPressed(self, luzomat):
+        luzomat.board.openAirValve()
+        luzomat.board.openWaterValve()
 
     def teaButtonReleased(self, luzomat):
-        luzomat.closeWaterValve()
-        luzomat.closeAirValve()
+        luzomat.board.closeWaterValve()
+        luzomat.board.closeAirValve()
 
     def coin(self, luzomat):
         self.changeState(luzomat, CoinAccepted())
 
 class CoinAccepted(State):
     def coffeeButton(self, luzomat):
-        luzomat.openAirValve()
-        luzomat.openWaterValve()
-        luzomat.closeUpperSchnapsValve()
-        luzomat.openLowerSchnapsValve()
+        luzomat.board.openAirValve()
+        luzomat.board.dropCoin()
+        luzomat.board.openWaterValve()
+        luzomat.board.closeUpperSchnapsValve()
+        luzomat.board.openLowerSchnapsValve()
         time.sleep(3)
-        luzomat.closeWaterValve()
-        luzomat.closerLowerSchnapsValve()
-        luzomat.openUpperSchnapsValve()
+        luzomat.board.closeWaterValve()
+        luzomat.board.closerLowerSchnapsValve()
+        luzomat.board.openUpperSchnapsValve()
         self.changeState(luzomat, IdleState())
 
-    def teaButtonPushed(self, luzomat):
-        luzomat.openAirValve()
-        luzomat.openWaterValve()
+    def teaButtonPressed(self, luzomat):
+        luzomat.board.openAirValve()
+        luzomat.board.openWaterValve()
 
     def teaButtonReleased(self, luzomat):
-        luzomat.closeWaterValve()
-        luzomat.closeAirValve()
+        luzomat.board.closeWaterValve()
+        luzomat.board.closeAirValve()
 
     def coin(self, luzomat):
         pass
+
+if __name__ == '__main__':
+    luzomat = Luzomat()
+    luzomat.mainloop()
