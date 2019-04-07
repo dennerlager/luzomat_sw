@@ -64,18 +64,24 @@ class Board:
             self.isTeaButtonPressed()):
             self.teaButtonLastState = True
             return True
+        else:
+            return False
 
     def wasTeaButtonReleased(self):
         if (self.teaButtonLastState and
             (not self.isTeaButtonPressed())):
             self.teaButtonLastState = False
             return True
+        else:
+            return False
 
     def isPaid(self):
         if ((not self.coinLastState) and
             self.isCoinPresent()):
             self.coinLastState = True
             return True
+        else:
+            return False
 
     def isCoinPresent(self):
         self.turnCoinSlotTxOn()
@@ -117,6 +123,9 @@ if __name__ == '__main__':
     board.openLowerSchnapsValve()
     input('close ')
     board.closeLowerSchnapsValve()
+
+    input('drop coin')
+    board.dropCoin()
 
     input('led1 ')
     board.turnLed1On()

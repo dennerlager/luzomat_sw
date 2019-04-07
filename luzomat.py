@@ -2,6 +2,7 @@ import abc
 import time
 from board import Board
 from boiler import Boiler
+from counter import Counter
 
 class Luzomat:
     def __init__(self):
@@ -9,6 +10,7 @@ class Luzomat:
         self.boiler = Boiler()
         self.boiler.setTemperatureC(95)
         self.board = Board()
+        self.luzcounter = Counter('luz')
 
     def coffeeButton(self):
         self.currentState.coffeeButton(self)
@@ -27,6 +29,9 @@ class Luzomat:
 
     def shutdown(self):
         self.boiler.shutdown()
+
+    def increaseLuzCounter(self):
+        self.luzcounter.increase()
 
     def mainloop(self):
         try:
@@ -79,6 +84,7 @@ class IdleState(State):
 
 class CoinAccepted(State):
     def coffeeButton(self, luzomat):
+        luzomat.increaseLuzCounter()
         luzomat.board.openAirValve()
         luzomat.board.dropCoin()
         luzomat.board.openWaterValve()
