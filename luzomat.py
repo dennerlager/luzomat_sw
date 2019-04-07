@@ -12,6 +12,14 @@ class Luzomat:
         self.board = Board()
         self.luzcounter = Counter('luz')
 
+    def getTemperatures(self):
+        return self.boiler.getTemperatures()
+
+    def getCurrentState(self):
+        return {'current state': self.currentState,
+                'luz counter': self.luzcounter.getCount()}.update(
+            self.board.getCurrentState())
+
     def coffeeButton(self):
         self.currentState.coffeeButton(self)
 

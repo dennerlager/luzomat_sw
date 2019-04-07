@@ -19,6 +19,9 @@ class Counter():
     def increase(self):
         self += 1
 
+    def getCount(self):
+        return self.count
+
 class DbConnection:
     def __init__(self):
         self.engine = sqlalchemy.create_engine('sqlite:///db.db')

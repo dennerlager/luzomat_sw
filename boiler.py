@@ -16,6 +16,10 @@ class Boiler:
             raise ValueError('temperature {}°C exeeds limit'.format(temperatureC))
         self.qToWorker.put(Message('setTemperatureC', temperatureC))
 
+    def getTemperatures(self):
+        self.qToWorker.put(Message('getTemperatures'))
+        return self.qFromWorker.get().data
+
     def shutdown(self):
         self.qToWorker.put(Message('shutdown'))
         self.worker.join()
@@ -43,6 +47,10 @@ class BoilerWorker(multiprocessing.Process):
                     break
                 elif message.command == 'setTemperatureC':
                     self.setTemperatureC(message.data)
+                elif message.command == 'getTemperatures':
+                    self.qFromWorker.put(Message(
+                        'temperatures', [self.tempSensor1.getTemperatureC,
+                                         self.tempSensor2.getTemperatureC]))
                 else:
                     raise ValueError('no command: {}'.format(message))
         finally:

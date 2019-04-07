@@ -17,6 +17,18 @@ class Board:
         self.teaButtonLastState = self.isTeaButtonPressed()
         self.coinLastState = self.isCoinPresent()
 
+    def getCurrentState(self):
+        return {'tea button': self.isTeaButtonPressed(),
+                'luz button': self.isCoffeeButtonPressed(),
+                'coin present': self.isCoinPresent(),
+                'coin motor': self.coinMotor.read(),
+                'led 1': self.led1.read(),
+                'led 2': self.led2.read(),
+                'schnaps top': self.schnapsTop.read(),
+                'schnaps bottom': self.schnapsBottom.read(),
+                'water': self.water.read(),
+                'air': self.air.read()}
+
     def openAirValve(self):
         self.air.set()
 

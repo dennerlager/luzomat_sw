@@ -17,6 +17,9 @@ class Gpio(abc.ABC):
     def __del__(self):
         gpio.cleanup(self.channel)
 
+    def read(self):
+        return gpio.input(self.channel)
+
 class Output(Gpio):
     def setup(self):
         gpio.setup(self.channel, gpio.OUT, initial=gpio.LOW)
@@ -33,6 +36,3 @@ class Output(Gpio):
 class Input(Gpio):
     def setup(self):
         gpio.setup(self.channel, gpio.IN)
-
-    def read(self):
-        return gpio.input(self.channel)
