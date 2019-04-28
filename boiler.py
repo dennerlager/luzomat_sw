@@ -49,8 +49,8 @@ class BoilerWorker(multiprocessing.Process):
                     self.setTemperatureC(message.data)
                 elif message.command == 'getTemperatures':
                     self.qFromWorker.put(Message(
-                        'temperatures', [self.tempSensor1.getTemperatureC,
-                                         self.tempSensor2.getTemperatureC]))
+                        'temperatures', [self.tempSensor1.getTemperatureC(),
+                                         self.tempSensor2.getTemperatureC()]))
                 else:
                     raise ValueError('no command: {}'.format(message))
         finally:
@@ -59,7 +59,7 @@ class BoilerWorker(multiprocessing.Process):
     def controlHeater(self):
         temperature1 = self.tempSensor1.getTemperatureC()
         temperature2 = self.tempSensor2.getTemperatureC()
-        maxDelta = 2
+        maxDelta = 5
         if abs(temperature1 - temperature2) > maxDelta:
             raise RuntimeError(
                 'temperatures differ more than {}\n'.format(maxDelta) +

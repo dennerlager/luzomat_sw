@@ -8,6 +8,11 @@ class Gui(tk.Frame):
         self.luzomat = Luzomat()
         self.makeWidgets()
         self.master.bind('<Escape>', lambda e: self.quit())
+        self.updateViews()
+
+    def quit(self):
+        self.luzomat.shutdown()
+        tk.Frame.quit(self)
 
     def makeWidgets(self):
         self.temperatureSensor1 = TempSensor(
@@ -21,7 +26,6 @@ class Gui(tk.Frame):
             self.ios[name] = IO(
             self, name, side=tk.TOP,
             padx=10, pady=0, ipadx=5, ipady=5)
-        self.exitButton = ExitButton(self)
 
     def updateViews(self):
         temperatures = self.luzomat.getTemperatures()
@@ -97,20 +101,11 @@ class IOValueLabel(tk.Label):
     def setValue(self, value):
         self.config(text='{}'.format(value))
 
-class ExitButton(tk.Button):
-    def __init__(self, parent=None, **options):
-        tk.Button.__init__(self, parent)
-        self.parent = parent
-        self.pack(**options)
-        self.config(text='exit')
-        self.config(command=self.quit)
-
 if __name__ == '__main__':
     root = tk.Tk()
-    # root.attributes('-fullscreen', True)
-    # root.option_add('*Font', 'DejaVuSans 20')
+    icon = tk.Image('photo', file='icon.png')
+    root.tk.call('wm', 'iconphoto', root._w, icon)
+    root.option_add('*Font', 'DejaVuSans 20')
     myapp = Gui(root)
-    # root.wm_maxsize(800, 480)
-    # root.wm_minsize(800, 480)
     root.mainloop()
     root.destroy()
