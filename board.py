@@ -97,7 +97,7 @@ class Board:
 
     def isCoinPresent(self):
         self.turnCoinSlotTxOn()
-        isCoinPresent = self.coinSlotRx.read()
+        isCoinPresent = not self.coinSlotRx.read()
         self.turnCoinSlotTxOff()
         return isCoinPresent
 
