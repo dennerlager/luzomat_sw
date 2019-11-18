@@ -40,7 +40,7 @@ class BoilerWorker(multiprocessing.Process):
             while True:
                 self.controlHeater()
                 try:
-                    message = self.qToWorker.get(block=True, timeout=0.1)
+                    message = self.qToWorker.get(block=True, timeout=0.01)
                 except queue.Empty:
                     continue
                 if message.command == 'shutdown':
