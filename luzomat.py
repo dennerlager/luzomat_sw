@@ -8,7 +8,7 @@ class Luzomat:
     def __init__(self):
         self.currentState = IdleState()
         self.boiler = Boiler()
-        # self.boiler.setTemperatureC(95)
+        self.boiler.setTemperatureC(95)
         self.board = Board()
         self.luzcounter = Counter('luz')
 
@@ -78,7 +78,18 @@ class State(abc.ABC):
 
 class IdleState(State):
     def coffeeButton(self, luzomat):
-        pass
+        luzomat.increaseLuzCounter()
+        luzomat.board.openAirValve()
+        luzomat.board.dropCoin()
+        luzomat.board.openWaterValve()
+        luzomat.board.closeUpperSchnapsValve()
+        luzomat.board.openLowerSchnapsValve()
+        time.sleep(3)
+        luzomat.board.closeWaterValve()
+        luzomat.board.closeLowerSchnapsValve()
+        luzomat.board.openUpperSchnapsValve()
+        luzomat.board.closeAirValve()
+        self.changeState(luzomat, IdleState())
 
     def teaButtonPressed(self, luzomat):
         luzomat.board.openAirValve()
@@ -101,8 +112,9 @@ class CoinAccepted(State):
         luzomat.board.openLowerSchnapsValve()
         time.sleep(3)
         luzomat.board.closeWaterValve()
-        luzomat.board.closerLowerSchnapsValve()
+        luzomat.board.closeLowerSchnapsValve()
         luzomat.board.openUpperSchnapsValve()
+        luzomat.board.closeAirValve()
         self.changeState(luzomat, IdleState())
 
     def teaButtonPressed(self, luzomat):
