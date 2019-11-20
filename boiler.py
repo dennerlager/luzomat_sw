@@ -1,4 +1,5 @@
 import queue
+import signal
 import multiprocessing
 from heater import Heater
 from message import Message
@@ -36,6 +37,7 @@ class BoilerWorker(multiprocessing.Process):
         self.heater = Heater()
 
     def run(self):
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
         try:
             while True:
                 self.controlHeater()
