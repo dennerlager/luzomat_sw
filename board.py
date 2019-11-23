@@ -11,7 +11,6 @@ class Board:
         self.schnapsTop = Output(36)
         self.schnapsBottom = Output(35)
         self.water = Output(38)
-        self.air = Output(37)
         self.teaButtonLastState = self.isTeaButtonPressed()
         self.coinLastState = self.isCoinPresent()
 
@@ -22,14 +21,7 @@ class Board:
                 'coin motor': self.coinMotor.read(),
                 'schnaps top': self.schnapsTop.read(),
                 'schnaps bottom': self.schnapsBottom.read(),
-                'water': self.water.read(),
-                'air': self.air.read()}
-
-    def openAirValve(self):
-        self.air.set()
-
-    def closeAirValve(self):
-        self.air.clear()
+                'water': self.water.read()}
 
     def openWaterValve(self):
         self.water.set()
@@ -99,11 +91,6 @@ class Board:
 
 if __name__ == '__main__':
     board = Board()
-
-    input('air valve ')
-    board.openAirValve()
-    input('close ')
-    board.closeAirValve()
 
     input('water valve ')
     board.openWaterValve()

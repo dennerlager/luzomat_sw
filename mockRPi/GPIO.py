@@ -20,5 +20,5 @@ def input(channel):
 def output(channel, state):
     pass
 
-def cleanup():
+def cleanup(channel):
     pass
