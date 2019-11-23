@@ -1,6 +1,7 @@
 import queue
 import signal
 import multiprocessing
+from gpio import Output
 from heater import Heater
 from message import Message
 from thermo_couple_amp import TCAmp
@@ -35,6 +36,8 @@ class BoilerWorker(multiprocessing.Process):
         self.tempSensor1 = TCAmp(0)
         self.tempSensor2 = TCAmp(1)
         self.heater = Heater()
+        self.ledReady = Output(22)
+        self.ledWait = Output(18)
 
     def run(self):
         signal.signal(signal.SIGINT, signal.SIG_IGN)
@@ -72,16 +75,34 @@ class BoilerWorker(multiprocessing.Process):
         if ((not self.heater.isOn()) and
             (temperature < self.setPointC - self.hysteresis)):
             self.heater.turnOn()
+            self.turnLedReadyOff()
+            self.turnLedWaitOn()
         if ((self.heater.isOn()) and
             (temperature > self.setPointC + self.hysteresis)):
             self.heater.turnOff()
+            self.turnLedWaitOff()
+            self.turnLedReadyOn()
         self.heater.resetWatchdog()
 
     def shutdownHeater(self):
         self.heater.turnOff()
+        self.turnLedReadyOff()
+        self.turnLedWaitOff()
 
     def setTemperatureC(self, temperatureC):
         self.setPointC = temperatureC
+
+    def turnLedReadyOn(self):
+        self.ledReady.set()
+
+    def turnLedReadyOff(self):
+        self.ledReady.clear()
+
+    def turnLedWaitOn(self):
+        self.ledWait.set()
+
+    def turnLedWaitOff(self):
+        self.ledWait.clear()
 
 if __name__ == '__main__':
     boiler = Boiler()

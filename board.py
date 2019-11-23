@@ -8,8 +8,6 @@ class Board:
         self.coinSlotRx = Input(13)
         self.coinSlotTx = Output(15)
         self.coinMotor = Output(40)
-        self.led1 = Output(22)
-        self.led2 = Output(18)
         self.schnapsTop = Output(36)
         self.schnapsBottom = Output(35)
         self.water = Output(38)
@@ -22,8 +20,6 @@ class Board:
                 'luz button': self.isCoffeeButtonPressed(),
                 'coin present': self.isCoinPresent(),
                 'coin motor': self.coinMotor.read(),
-                'led 1': self.led1.read(),
-                'led 2': self.led2.read(),
                 'schnaps top': self.schnapsTop.read(),
                 'schnaps bottom': self.schnapsBottom.read(),
                 'water': self.water.read(),
@@ -52,18 +48,6 @@ class Board:
 
     def closeLowerSchnapsValve(self):
         self.schnapsBottom.clear()
-
-    def turnLed1On(self):
-        self.led1.set()
-
-    def turnLed1Off(self):
-        self.led1.clear()
-
-    def turnLed2On(self):
-        self.led2.set()
-
-    def turnLed2Off(self):
-        self.led2.clear()
 
     def isCoffeeButtonPressed(self):
         return self.coffeeButton.read()
@@ -138,16 +122,6 @@ if __name__ == '__main__':
 
     input('drop coin')
     board.dropCoin()
-
-    input('led1 ')
-    board.turnLed1On()
-    input('turn off ')
-    board.turnLed1Off()
-
-    input('led2 ')
-    board.turnLed2On()
-    input('turn off ')
-    board.turnLed2Off()
 
     input('coin slot tx ')
     board.turnCoinSlotTxOn()
