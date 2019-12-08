@@ -7,12 +7,20 @@ class Board:
         self.teaButton = Input(8)
         self.coinSlotRx = Input(13)
         self.coinSlotTx = Output(15)
+        self.turnCoinSlotTxOn()
         self.coinMotor = Output(40)
         self.schnapsTop = Output(36)
         self.schnapsBottom = Output(35)
         self.water = Output(38)
         self.teaButtonLastState = self.isTeaButtonPressed()
-        self.coinLastState = self.isCoinPresent()
+        self.ledReady = Output(22)
+        self.turnLedReadyOff()
+
+    def turnLedReadyOn(self):
+        self.ledReady.set()
+
+    def turnLedReadyOff(self):
+        self.ledReady.clear()
 
     def getCurrentState(self):
         return {'tea button': self.isTeaButtonPressed(),
@@ -63,19 +71,8 @@ class Board:
         else:
             return False
 
-    def isPaid(self):
-        if ((not self.coinLastState) and
-            self.isCoinPresent()):
-            self.coinLastState = True
-            return True
-        else:
-            return False
-
     def isCoinPresent(self):
-        self.turnCoinSlotTxOn()
-        isCoinPresent = not self.coinSlotRx.read()
-        self.turnCoinSlotTxOff()
-        return isCoinPresent
+        return not self.coinSlotRx.read()
 
     def turnCoinSlotTxOn(self):
         self.coinSlotTx.set()

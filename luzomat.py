@@ -54,7 +54,7 @@ class Luzomat:
                     self.teaButtonPressed()
                 if self.board.wasTeaButtonReleased():
                     self.teaButtonReleased()
-                if self.board.isPaid():
+                if self.board.isCoinPresent():
                     self.coin()
         finally:
             self.shutdown()
@@ -81,17 +81,7 @@ class State(abc.ABC):
 
 class IdleState(State):
     def coffeeButton(self, luzomat):
-        luzomat.increaseLuzCounter()
-        luzomat.airValve.open()
-        luzomat.board.closeUpperSchnapsValve()
-        luzomat.board.openLowerSchnapsValve()
-        time.sleep(7)
-        luzomat.board.openWaterValve()
-        time.sleep(6)
-        luzomat.board.closeWaterValve()
-        luzomat.board.closeLowerSchnapsValve()
-        luzomat.board.openUpperSchnapsValve()
-        self.changeState(luzomat, IdleState())
+        pass
 
     def teaButtonPressed(self, luzomat):
         luzomat.airValve.open()
@@ -101,6 +91,7 @@ class IdleState(State):
         luzomat.board.closeWaterValve()
 
     def coin(self, luzomat):
+        luzomat.board.turnLedReadyOn()
         self.changeState(luzomat, CoinAccepted())
 
 class CoinAccepted(State):
@@ -115,6 +106,7 @@ class CoinAccepted(State):
         luzomat.board.closeWaterValve()
         luzomat.board.closeLowerSchnapsValve()
         luzomat.board.openUpperSchnapsValve()
+        luzomat.board.turnLedReadyOff()
         self.changeState(luzomat, IdleState())
 
     def teaButtonPressed(self, luzomat):
